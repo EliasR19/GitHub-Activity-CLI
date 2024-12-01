@@ -25,28 +25,36 @@ public class gestorActivity {
 		
 		HttpResponse<String> ans;
 		
+		
 		//lista donde se guardan las actividades bajadas
 		
 		try {
 			ans = client.send(request, HttpResponse.BodyHandlers.ofString());
-	
 			
+			if(ans.statusCode() == 404) {
+				System.out.println("User not found. Try again!");
+				return;
+			}
+
+		
 			String actStr = String.valueOf(ans.body());
 			String[] list = actStr.replace("]", "").replace("[", "").split("\\},\\{\"id");
 
-			
 			for(String s : list) {
 				loadAct.add(Activity.loadJson(s));
-				//System.out.println(s);
 			}
 			
+			
+			this.recentActivity();
+			this.printActivity();
+			
 	
-		} catch (IOException | InterruptedException e) {
+		} catch (InterruptedException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			
 		}
 	}
-	
 	//recent Activity
 	
 	List<Activity> recent = new ArrayList<Activity>();
